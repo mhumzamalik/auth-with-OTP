@@ -25,11 +25,7 @@ function getInitials(fullName: string): string {
     .join("");
 }
 
-/**
- * Responsive top navigation bar for the protected dashboard.
- * - Desktop: full horizontal nav with links + user avatar + logout
- * - Mobile: hamburger → slide-down menu
- */
+
 export function DashboardNav(): React.ReactElement {
   const pathname = usePathname();
   const { user, isLoading, logout, isAuthenticating } = useAuth();
@@ -41,7 +37,6 @@ export function DashboardNav(): React.ReactElement {
     <header className="sticky top-0 z-40 w-full border-b border-gray-100 bg-white/90 backdrop-blur-sm dark:border-gray-800 dark:bg-gray-950/90">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
 
-        {/* Logo */}
         <Link
           href="/dashboard"
           className="flex items-center gap-2.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-burgundy rounded"
@@ -61,7 +56,6 @@ export function DashboardNav(): React.ReactElement {
           </span>
         </Link>
 
-        {/* Desktop nav links */}
         <nav
           className="hidden items-center gap-1 md:flex"
           aria-label="Main navigation"
@@ -91,11 +85,8 @@ export function DashboardNav(): React.ReactElement {
           })}
         </nav>
 
-        {/* Right side: theme toggle + user + logout */}
         <div className="flex items-center gap-2">
           <ThemeToggle />
-
-          {/* User avatar */}
           {!isLoading && user && (
             <div className="hidden items-center gap-3 md:flex">
               <Avatar className="h-8 w-8">
@@ -114,8 +105,6 @@ export function DashboardNav(): React.ReactElement {
               </div>
             </div>
           )}
-
-          {/* Logout */}
           <Button
             variant="ghost"
             size="sm"
@@ -131,8 +120,6 @@ export function DashboardNav(): React.ReactElement {
             )}
             <span>Sign out</span>
           </Button>
-
-          {/* Mobile hamburger */}
           <button
             type="button"
             className="inline-flex items-center justify-center rounded-lg p-2 text-gray-600 hover:bg-gray-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-burgundy dark:text-gray-400 dark:hover:bg-gray-800 md:hidden"
@@ -150,7 +137,6 @@ export function DashboardNav(): React.ReactElement {
         </div>
       </div>
 
-      {/* Mobile menu */}
       {mobileOpen && (
         <nav
           id="mobile-menu"
@@ -182,7 +168,6 @@ export function DashboardNav(): React.ReactElement {
               );
             })}
 
-            {/* Mobile logout */}
             <button
               type="button"
               onClick={() => {

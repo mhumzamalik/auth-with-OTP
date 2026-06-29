@@ -17,10 +17,6 @@ interface WelcomeEmailProps {
   dashboardUrl?: string;
 }
 
-/**
- * React Email template for post-verification welcome email.
- * Sent after a user successfully verifies their email address.
- */
 export default function WelcomeEmail({
   firstName,
   appName = "AuthApp",
@@ -32,12 +28,9 @@ export default function WelcomeEmail({
       <Preview>Welcome to {appName}, {firstName}! Your account is ready.</Preview>
       <Body style={body}>
         <Container style={container}>
-          {/* Header */}
           <Section style={header}>
             <Text style={logoText}>{appName}</Text>
           </Section>
-
-          {/* Hero */}
           <Section style={hero}>
             <Text style={heroEmoji}>🎉</Text>
             <Text style={heroHeading}>Welcome, {firstName}!</Text>
@@ -45,8 +38,6 @@ export default function WelcomeEmail({
               Your email has been verified and your account is ready to use.
             </Text>
           </Section>
-
-          {/* Quick Start */}
           <Section style={content}>
             <Text style={sectionTitle}>Getting Started</Text>
 
@@ -73,8 +64,6 @@ export default function WelcomeEmail({
                 access to all features available to your account.
               </Text>
             </Section>
-
-            {/* CTA Button */}
             <Section style={ctaSection}>
               <Link href={dashboardUrl} style={ctaButton}>
                 Go to Dashboard →
@@ -88,8 +77,6 @@ export default function WelcomeEmail({
               typically respond within 24 hours.
             </Text>
           </Section>
-
-          {/* Footer */}
           <Section style={footer}>
             <Text style={footerText}>
               © {new Date().getFullYear()} {appName}. All rights reserved.
@@ -104,8 +91,6 @@ export default function WelcomeEmail({
     </Html>
   );
 }
-
-// ── Styles ──────────────────────────────────────────────────────────────────
 
 const body: React.CSSProperties = {
   backgroundColor: "#FAE5D3",

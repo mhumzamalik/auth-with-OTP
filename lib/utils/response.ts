@@ -1,13 +1,12 @@
 import { NextResponse } from "next/server";
 
-/** Standard success response shape */
 export interface ApiSuccessResponse<T = unknown> {
   success: true;
   message: string;
   data: T;
 }
 
-/** Standard error response shape */
+
 export interface ApiErrorResponse {
   success: false;
   message: string;

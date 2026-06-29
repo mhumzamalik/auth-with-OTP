@@ -1,9 +1,7 @@
 import mongoose, { Document, Model, Schema } from "mongoose";
 
-/** User roles within the system */
 export type UserRole = "user" | "admin";
 
-/** Mongoose document interface for User */
 export interface IUser extends Document {
   _id: mongoose.Types.ObjectId;
   fullName: string;
@@ -75,10 +73,8 @@ const UserSchema = new Schema<IUser>(
   }
 );
 
-/** Index for fast email lookups */
 UserSchema.index({ email: 1 });
 
-/** Compound index for lock checking */
 UserSchema.index({ email: 1, lockUntil: 1 });
 
 const User: Model<IUser> =

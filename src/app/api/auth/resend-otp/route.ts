@@ -50,7 +50,6 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
     if (!user) throw new NotFoundError("User not found");
 
-    // ── Rate limit by email: 3 OTPs / hour ────────────────────────────────
     const rateLimit = checkRateLimit({
       key: `otp:${user.email}:${type}`,
       max: RATE_LIMIT_OTP_MAX,

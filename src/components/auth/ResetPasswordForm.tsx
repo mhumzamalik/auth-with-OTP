@@ -21,16 +21,7 @@ import { OtpInput } from "@/components/auth/OtpInput";
 import { PasswordStrengthBar } from "@/components/auth/PasswordStrengthBar";
 import { LoadingSpinner } from "@/components/shared/LoadingSpinner";
 
-/**
- * Reset password form.
- * Reads userId from the URL query param set by ForgotPasswordForm.
- *
- * Flow:
- * 1. User enters the 6-digit OTP from their email
- * 2. User enters a new password + confirmation
- * 3. POST /api/auth/reset-password — verifies OTP + updates password
- * 4. On success: shows message then redirects to /login
- */
+
 export function ResetPasswordForm(): React.ReactElement {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -60,7 +51,6 @@ export function ResetPasswordForm(): React.ReactElement {
 
   const watchedPassword = watch("password");
 
-  // Keep the hidden userId field in sync if query param loads after mount
   React.useEffect(() => {
     if (userId) setValue("userId", userId);
   }, [userId, setValue]);
@@ -123,7 +113,6 @@ export function ResetPasswordForm(): React.ReactElement {
     [router]
   );
 
-  // Guard: no userId means the user landed here directly without going through forgot-password
   if (!userId) {
     return (
       <div className="w-full space-y-6">
@@ -145,7 +134,6 @@ export function ResetPasswordForm(): React.ReactElement {
 
   return (
     <div className="w-full space-y-6">
-      {/* Back link */}
       <Link
         href="/forgot-password"
         className="inline-flex items-center gap-1.5 text-sm text-gray-500 transition-colors hover:text-gray-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-burgundy rounded dark:text-gray-400 dark:hover:text-gray-100"
@@ -155,7 +143,6 @@ export function ResetPasswordForm(): React.ReactElement {
         Back
       </Link>
 
-      {/* Heading */}
       <div className="space-y-1">
         <div className="mb-2 grid grid-cols-2 gap-1" aria-hidden="true">
           {[0, 1, 2, 3].map((i) => (
@@ -174,7 +161,6 @@ export function ResetPasswordForm(): React.ReactElement {
         </p>
       </div>
 
-      {/* Feedback */}
       <FormError message={serverError} />
       <FormSuccess message={successMessage} />
 
@@ -185,10 +171,9 @@ export function ResetPasswordForm(): React.ReactElement {
           className="space-y-5"
           aria-label="Reset password form"
         >
-          {/* Hidden userId field */}
           <input type="hidden" {...register("userId")} />
 
-          {/* OTP input */}
+         
           <div className="space-y-2">
             <Label htmlFor="otp-0">Verification Code</Label>
             <OtpInput
@@ -217,7 +202,7 @@ export function ResetPasswordForm(): React.ReactElement {
             </p>
           </div>
 
-          {/* New Password */}
+          
           <div className="space-y-1.5">
             <Label htmlFor="reset-password">New Password</Label>
             <div className="relative">
@@ -260,7 +245,7 @@ export function ResetPasswordForm(): React.ReactElement {
             )}
           </div>
 
-          {/* Confirm Password */}
+          
           <div className="space-y-1.5">
             <Label htmlFor="reset-confirm-password">Confirm New Password</Label>
             <div className="relative">
@@ -306,7 +291,7 @@ export function ResetPasswordForm(): React.ReactElement {
             )}
           </div>
 
-          {/* Submit */}
+          
           <Button
             type="submit"
             id="reset-password-submit-btn"

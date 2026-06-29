@@ -1,7 +1,6 @@
 import jwt from "jsonwebtoken";
 import { UnauthorizedError } from "@/lib/errors";
 
-/** Payload stored in the access token — minimal, no sensitive data */
 export interface AccessTokenPayload {
   sub: string;      // userId
   role: string;
@@ -9,7 +8,6 @@ export interface AccessTokenPayload {
   type: "access";
 }
 
-/** Payload stored in the refresh token */
 export interface RefreshTokenPayload {
   sub: string;      // userId
   sessionId: string;

@@ -6,20 +6,13 @@ import { Sun, Moon, Monitor } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface ThemeToggleProps {
-  /** Additional class names for the button wrapper. */
   className?: string;
 }
 
-/**
- * Three-way theme toggle: Light → Dark → System.
- * Persisted by next-themes via localStorage.
- * Renders a single icon button that cycles through themes on click.
- */
 export function ThemeToggle({ className }: ThemeToggleProps): React.ReactElement {
   const { theme, setTheme, resolvedTheme } = useTheme();
   const [mounted, setMounted] = React.useState(false);
 
-  // Avoid hydration mismatch — only render the real icon after mount
   React.useEffect(() => {
     setMounted(true);
   }, []);
@@ -51,7 +44,6 @@ export function ThemeToggle({ className }: ThemeToggleProps): React.ReactElement
         className
       )}
     >
-      {/* Pre-mount: render a neutral placeholder to avoid hydration mismatch */}
       {!mounted ? (
         <Monitor className="h-4 w-4" aria-hidden="true" />
       ) : theme === "dark" ? (

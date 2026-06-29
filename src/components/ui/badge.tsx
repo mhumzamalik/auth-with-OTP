@@ -31,10 +31,7 @@ export interface BadgeProps
   extends React.HTMLAttributes<HTMLSpanElement>,
     VariantProps<typeof badgeVariants> {}
 
-/**
- * Badge component for status labels, tags, and indicators.
- * Used in SessionCard for "Current Device" and role labels on the dashboard.
- */
+
 function Badge({ className, variant, ...props }: BadgeProps): React.ReactElement {
   return (
     <span className={cn(badgeVariants({ variant }), className)} {...props} />

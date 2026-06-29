@@ -17,7 +17,6 @@ import { ValidationError, RateLimitError, APIError } from "@/lib/errors";
 import ResetPasswordOTP from "@/emails/ResetPasswordOTP";
 import React from "react";
 
-/** Consistent response message to prevent email enumeration attacks */
 const SAFE_RESPONSE_MESSAGE =
   "If this email is registered, you will receive a password reset code.";
 
@@ -35,7 +34,6 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
     const email = normalizeEmail(parsed.data.email);
 
-    // ── Rate limit per email: 3 / hour ─────────────────────────────────────
     const rateLimit = checkRateLimit({
       key: `forgot:${email}`,
       max: RATE_LIMIT_OTP_MAX,
@@ -51,7 +49,6 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
     const user = await User.findOne({ email });
 
-    // ── Always return same message (anti-enumeration) ──────────────────────
     if (!user || !user.isVerified) {
       return apiSuccess({}, SAFE_RESPONSE_MESSAGE);
     }

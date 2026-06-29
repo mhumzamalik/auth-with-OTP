@@ -1,5 +1,4 @@
-// ua-parser-js ships CJS; use require to avoid ESM interop "no construct signatures" error
-// eslint-disable-next-line @typescript-eslint/no-require-imports
+
 const { UAParser } = require("ua-parser-js") as {
   UAParser: new (ua?: string) => {
     getResult(): {
@@ -10,7 +9,6 @@ const { UAParser } = require("ua-parser-js") as {
   };
 };
 
-/** Parsed device information from User-Agent string */
 export interface ParsedDevice {
   deviceName: string;
   browser: string;

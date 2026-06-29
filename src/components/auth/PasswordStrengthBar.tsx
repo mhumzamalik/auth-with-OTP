@@ -5,13 +5,10 @@ import { cn } from "@/lib/utils";
 import { getPasswordStrength } from "@/lib/auth/password";
 
 interface PasswordStrengthBarProps {
-  /** The current password value to evaluate. */
   password: string;
-  /** Additional class names for the wrapper. */
   className?: string;
 }
 
-/** Maps strength score (0–4) to display metadata. */
 const STRENGTH_CONFIG = [
   { label: "Too weak",  color: "bg-red-500",    width: "w-1/4"  },
   { label: "Weak",      color: "bg-orange-500",  width: "w-2/4"  },
@@ -20,11 +17,7 @@ const STRENGTH_CONFIG = [
   { label: "Very strong", color: "bg-emerald-600", width: "w-full" },
 ] as const;
 
-/**
- * Visual password strength indicator used on register and reset-password forms.
- * Displays a coloured progress bar and a strength label.
- * Hidden from screen when password is empty.
- */
+
 export function PasswordStrengthBar({
   password,
   className,
@@ -41,9 +34,9 @@ export function PasswordStrengthBar({
       aria-label={`Password strength: ${config.label}`}
       aria-live="polite"
     >
-      {/* Track */}
+      
       <div className="h-1.5 w-full overflow-hidden rounded-full bg-gray-100 dark:bg-gray-800">
-        {/* Fill */}
+
         <div
           className={cn(
             "h-full rounded-full transition-all duration-500 ease-out",
@@ -53,7 +46,6 @@ export function PasswordStrengthBar({
         />
       </div>
 
-      {/* Label row */}
       <div className="flex items-center justify-between">
         <p
           className={cn(
@@ -66,7 +58,6 @@ export function PasswordStrengthBar({
           {config.label}
         </p>
 
-        {/* Dot indicators */}
         <div className="flex gap-1" aria-hidden="true">
           {STRENGTH_CONFIG.map((_, i) => (
             <span

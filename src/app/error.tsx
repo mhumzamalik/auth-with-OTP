@@ -10,24 +10,18 @@ interface ErrorPageProps {
   reset: () => void;
 }
 
-/**
- * Root error boundary.
- * Displayed by Next.js when an unhandled error is thrown
- * in a Server or Client Component below this boundary.
- */
 export default function ErrorPage({
   error,
   reset,
 }: ErrorPageProps): React.ReactElement {
   React.useEffect(() => {
-    // Log to console in development; swap for Sentry/Datadog in production
+    
     console.error("[ErrorBoundary]", error);
   }, [error]);
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-white p-6 dark:bg-gray-950">
       <div className="flex max-w-md flex-col items-center gap-6 text-center">
-        {/* Icon */}
         <div
           className="flex h-16 w-16 items-center justify-center rounded-full"
           style={{ backgroundColor: "#FAE5D3" }}
@@ -36,7 +30,6 @@ export default function ErrorPage({
           <AlertTriangle className="h-8 w-8" style={{ color: "#7B1F4B" }} />
         </div>
 
-        {/* Heading */}
         <div className="space-y-2">
           <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
             Something went wrong
@@ -54,7 +47,7 @@ export default function ErrorPage({
           )}
         </div>
 
-        {/* Actions */}
+        
         <div className="flex flex-col gap-3 sm:flex-row">
           <Button
             onClick={reset}

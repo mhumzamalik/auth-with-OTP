@@ -1,6 +1,5 @@
 import mongoose, { Document, Model, Schema } from "mongoose";
 
-/** Mongoose document interface for Session */
 export interface ISession extends Document {
   _id: mongoose.Types.ObjectId;
   userId: mongoose.Types.ObjectId;
@@ -60,16 +59,12 @@ const SessionSchema = new Schema<ISession>(
   }
 );
 
-/** Index for fast user session lookups */
 SessionSchema.index({ userId: 1 });
 
-/** Index for token-based session lookups */
 SessionSchema.index({ hashedRefreshToken: 1 });
 
-/** Compound index for active session queries */
 SessionSchema.index({ userId: 1, revokedAt: 1, expiresAt: 1 });
 
-/** TTL index — clean up expired sessions automatically */
 SessionSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
 
 const Session: Model<ISession> =

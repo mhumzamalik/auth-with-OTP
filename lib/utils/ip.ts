@@ -14,22 +14,18 @@ import type { NextRequest } from "next/server";
 export function getClientIP(request: NextRequest): string {
   const headers = request.headers;
 
-  // Cloudflare
   const cfIP = headers.get("cf-connecting-ip");
   if (cfIP) return cfIP.trim();
 
-  // Most common proxy header
   const forwardedFor = headers.get("x-forwarded-for");
   if (forwardedFor) {
-    // x-forwarded-for can contain a chain: "client, proxy1, proxy2"
+    
     const firstIP = forwardedFor.split(",")[0]?.trim();
     if (firstIP) return firstIP;
   }
 
-  // Nginx real IP
   const realIP = headers.get("x-real-ip");
   if (realIP) return realIP.trim();
 
-  // Fallback
   return "0.0.0.0";
 }

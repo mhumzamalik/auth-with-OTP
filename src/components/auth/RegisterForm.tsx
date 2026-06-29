@@ -22,15 +22,6 @@ import { GoogleButton } from "@/components/auth/GoogleButton";
 import { PasswordStrengthBar } from "@/components/auth/PasswordStrengthBar";
 import { LoadingSpinner } from "@/components/shared/LoadingSpinner";
 
-/**
- * Registration form with:
- * - Full Name, Email, Password, Confirm Password (Zod validated)
- * - Show/hide toggle on both password fields
- * - Live PasswordStrengthBar driven by watched password value
- * - Google OAuth sign-up button
- * - Server-side error + success message display
- * - On success: redirects to /verify-email?userId=…
- */
 export function RegisterForm(): React.ReactElement {
   const router = useRouter();
 
@@ -87,7 +78,6 @@ export function RegisterForm(): React.ReactElement {
         description: "A verification code has been sent to your email.",
       });
 
-      // Small delay so user reads success message, then redirect
       setTimeout(() => {
         router.push(`/verify-email?userId=${userId}`);
       }, 1500);
@@ -103,7 +93,7 @@ export function RegisterForm(): React.ReactElement {
 
   return (
     <div className="w-full space-y-6">
-      {/* Logo mark + heading */}
+
       <div className="flex flex-col items-center gap-1 text-center">
         <div className="mb-2 grid grid-cols-2 gap-1" aria-hidden="true">
           {[0, 1, 2, 3].map((i) => (
@@ -122,7 +112,7 @@ export function RegisterForm(): React.ReactElement {
         </p>
       </div>
 
-      {/* Google OAuth */}
+
       <GoogleButton
         id="google-register-btn"
         label="Sign up with Google"
@@ -130,7 +120,6 @@ export function RegisterForm(): React.ReactElement {
         isLoading={isGoogleLoading}
       />
 
-      {/* Divider */}
       <div className="flex items-center gap-3">
         <Separator className="flex-1" />
         <span className="text-xs text-gray-400 whitespace-nowrap dark:text-gray-500">
@@ -139,18 +128,16 @@ export function RegisterForm(): React.ReactElement {
         <Separator className="flex-1" />
       </div>
 
-      {/* Feedback */}
       <FormError message={serverError} />
       <FormSuccess message={successMessage} />
 
-      {/* Form */}
       <form
         onSubmit={handleSubmit(onSubmit)}
         noValidate
         className="space-y-4"
         aria-label="Registration form"
       >
-        {/* Full Name */}
+ 
         <div className="space-y-1.5">
           <Label htmlFor="register-fullname">Full Name</Label>
           <Input
@@ -175,7 +162,6 @@ export function RegisterForm(): React.ReactElement {
           )}
         </div>
 
-        {/* Email */}
         <div className="space-y-1.5">
           <Label htmlFor="register-email">Email</Label>
           <Input
@@ -200,7 +186,7 @@ export function RegisterForm(): React.ReactElement {
           )}
         </div>
 
-        {/* Password */}
+        
         <div className="space-y-1.5">
           <Label htmlFor="register-password">Password</Label>
           <div className="relative">
@@ -230,7 +216,6 @@ export function RegisterForm(): React.ReactElement {
             </button>
           </div>
 
-          {/* Live strength bar */}
           <PasswordStrengthBar password={watchedPassword} />
 
           {errors.password && (
@@ -244,7 +229,6 @@ export function RegisterForm(): React.ReactElement {
           )}
         </div>
 
-        {/* Confirm Password */}
         <div className="space-y-1.5">
           <Label htmlFor="register-confirm-password">Confirm Password</Label>
           <div className="relative">
@@ -290,7 +274,6 @@ export function RegisterForm(): React.ReactElement {
           )}
         </div>
 
-        {/* Submit */}
         <Button
           type="submit"
           id="register-submit-btn"
@@ -310,7 +293,7 @@ export function RegisterForm(): React.ReactElement {
         </Button>
       </form>
 
-      {/* Login link */}
+     
       <p className="text-center text-sm text-gray-500 dark:text-gray-400">
         Already have an account?{" "}
         <Link

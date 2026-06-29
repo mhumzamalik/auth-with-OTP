@@ -1,9 +1,5 @@
 import { LoadingSpinner } from "@/components/shared/LoadingSpinner";
 
-/**
- * Root-level loading UI shown during route transitions.
- * Displayed by Next.js automatically via the loading.tsx convention.
- */
 export default function Loading(): React.ReactElement {
   return (
     <div

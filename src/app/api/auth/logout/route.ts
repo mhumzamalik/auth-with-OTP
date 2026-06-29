@@ -23,18 +23,15 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     let userId: string | undefined;
     let sessionId: string | undefined;
 
-    // Try to get info from access token
     if (accessToken) {
       try {
         const payload = verifyAccessToken(accessToken);
         userId = payload.sub;
         sessionId = payload.sessionId;
       } catch {
-        // Token may be expired — try refresh token approach
       }
     }
 
-    // If we have a refresh token, find and revoke the session
     if (refreshToken) {
       const hashedToken = hashRefreshToken(refreshToken);
       const session = await Session.findOne({ hashedRefreshToken: hashedToken });
@@ -44,11 +41,9 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         await revokeSession(session._id as mongoose.Types.ObjectId);
       }
     } else if (sessionId) {
-      // Revoke by sessionId from access token payload
       try {
         await revokeSession(new mongoose.Types.ObjectId(sessionId));
       } catch {
-        // Session may already be gone
       }
     }
 

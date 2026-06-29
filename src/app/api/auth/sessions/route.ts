@@ -16,9 +16,7 @@ import Session from "@/models/Session";
 import mongoose from "mongoose";
 import { formatDistanceToNow } from "date-fns";
 
-/**
- * GET /api/auth/sessions — Returns all active sessions for the current user
- */
+
 export async function GET(request: NextRequest): Promise<NextResponse> {
   try {
     const accessToken = await getAccessTokenFromCookies();
@@ -31,7 +29,6 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       new mongoose.Types.ObjectId(payload.sub)
     );
 
-    // Determine current session by refresh token
     const refreshToken = await getRefreshTokenFromCookies();
     const currentHash = refreshToken ? hashRefreshToken(refreshToken) : null;
 
@@ -58,9 +55,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
   }
 }
 
-/**
- * DELETE /api/auth/sessions?id=<sessionId> — Revokes a specific session
- */
+
 export async function DELETE(request: NextRequest): Promise<NextResponse> {
   const ip = getClientIP(request);
   const userAgent = request.headers.get("user-agent") ?? "";
@@ -81,7 +76,6 @@ export async function DELETE(request: NextRequest): Promise<NextResponse> {
     const session = await Session.findById(sessionId);
     if (!session) throw new NotFoundError("Session not found");
 
-    // Ensure the session belongs to the current user
     if (session.userId.toString() !== payload.sub) {
       throw new UnauthorizedError("Cannot revoke another user's session");
     }

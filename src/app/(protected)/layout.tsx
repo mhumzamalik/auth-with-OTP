@@ -12,11 +12,6 @@ interface ProtectedLayoutProps {
   children: React.ReactNode;
 }
 
-/**
- * Layout for all protected routes: /dashboard, /dashboard/security.
- * Middleware guarantees the user is authenticated before this renders.
- * Renders the DashboardNav + main content area.
- */
 export default function ProtectedLayout({
   children,
 }: ProtectedLayoutProps): React.ReactElement {
@@ -29,8 +24,6 @@ export default function ProtectedLayout({
       >
         {children}
       </main>
-
-      {/* Footer */}
       <footer className="border-t border-gray-100 bg-white py-4 dark:border-gray-800 dark:bg-gray-950">
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
           <p className="text-center text-xs text-gray-400 dark:text-gray-500">

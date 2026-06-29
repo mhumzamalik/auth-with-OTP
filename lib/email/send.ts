@@ -5,14 +5,12 @@ import { resend } from "@/lib/email/resend";
 const FROM_ADDRESS =
   process.env.EMAIL_FROM ?? "noreply@yourdomain.com";
 
-/** Options for sending a transactional email */
 interface SendEmailOptions {
   to: string | string[];
   subject: string;
   template: ReactElement;
 }
 
-/** Result from sending an email */
 interface SendEmailResult {
   success: boolean;
   id?: string;

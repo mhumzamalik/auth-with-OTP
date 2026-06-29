@@ -24,15 +24,11 @@ export async function comparePassword(
   password: string,
   hash: string
 ): Promise<boolean> {
-  // bcrypt.compare is internally timing-safe, but we add an extra layer
-  // using a constant-time comparison on the boolean result as a Buffer
+  
   const isMatch = await bcrypt.compare(password, hash);
 
-  // Convert booleans to Buffers of equal length for timingSafeEqual
   const a = Buffer.from(isMatch ? "1" : "0");
   const b = Buffer.from("1");
-
-  // This comparison takes constant time regardless of the result
   try {
     return timingSafeEqual(a, b);
   } catch {

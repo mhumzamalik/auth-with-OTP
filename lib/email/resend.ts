@@ -8,8 +8,4 @@ if (!RESEND_API_KEY) {
   );
 }
 
-/**
- * Singleton Resend client instance.
- * Used by send.ts to dispatch transactional emails.
- */
 export const resend = new Resend(RESEND_API_KEY ?? "re_placeholder");

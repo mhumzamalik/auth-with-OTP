@@ -31,7 +31,6 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   const userAgent = request.headers.get("user-agent") ?? "";
 
   try {
-    // ── Rate limit: 5 registrations / hour per IP ─────────────────────────
     const rateLimit = checkRateLimit({
       key: `register:${ip}`,
       max: RATE_LIMIT_REGISTER_MAX,
@@ -44,7 +43,6 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       );
     }
 
-    // ── Parse and validate request body ───────────────────────────────────
     const body: unknown = await request.json();
     const parsed = registerSchema.safeParse(body);
 
@@ -55,10 +53,8 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     const { fullName, email: rawEmail, password } = parsed.data;
     const email = normalizeEmail(rawEmail);
 
-    // ── Connect to database ────────────────────────────────────────────────
     await connectDB();
 
-    // ── Check for duplicate email ──────────────────────────────────────────
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       throw new ConflictError(
@@ -66,7 +62,6 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       );
     }
 
-    // ── Hash password and create user ──────────────────────────────────────
     const passwordHash = await hashPassword(password);
     const user = await User.create({
       fullName,
@@ -76,7 +71,6 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       role: "user",
     });
 
-    // ── Generate and send OTP ──────────────────────────────────────────────
     const plainOtp = await createOTP(user._id, "email-verification");
     const firstName = extractFirstName(fullName);
 
@@ -90,10 +84,8 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       }),
     });
 
-    // ── Reset rate limit on success ────────────────────────────────────────
     resetRateLimit(`register:${ip}`);
 
-    // ── Log event ─────────────────────────────────────────────────────────
     await logAuthEvent({
       userId: user._id,
       event: "USER_REGISTERED",

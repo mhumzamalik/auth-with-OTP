@@ -3,17 +3,12 @@ import { AlertCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface FormErrorProps {
-  /** Error message to display. Renders nothing if falsy. */
+  
   message?: string | null;
-  /** Additional class names for the wrapper. */
   className?: string;
 }
 
-/**
- * Displays a field-level or form-level error message.
- * Announces itself to screen readers via role="alert" and aria-live="polite".
- * Renders nothing when message is empty/null/undefined.
- */
+
 export function FormError({
   message,
   className,

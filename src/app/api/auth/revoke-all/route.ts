@@ -10,9 +10,6 @@ import { getClientIP } from "@/lib/utils/ip";
 import { UnauthorizedError, APIError } from "@/lib/errors";
 import mongoose from "mongoose";
 
-/**
- * POST /api/auth/revoke-all — Revokes all sessions except the current one
- */
 export async function POST(request: NextRequest): Promise<NextResponse> {
   const ip = getClientIP(request);
   const userAgent = request.headers.get("user-agent") ?? "";
@@ -26,7 +23,6 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
     await connectDB();
 
-    // Find current session to exclude from revocation
     const refreshToken = await getRefreshTokenFromCookies();
     let currentSessionId: mongoose.Types.ObjectId | undefined;
 
@@ -43,7 +39,6 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
     const revokedCount = await revokeAllUserSessions(userId, currentSessionId);
 
-    // Log one event per revocation batch
     await logAuthEvent({
       userId,
       event: "SESSION_REVOKED",

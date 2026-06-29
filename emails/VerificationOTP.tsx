@@ -16,10 +16,7 @@ interface VerificationOTPProps {
   appName?: string;
 }
 
-/**
- * React Email template for email address verification OTP.
- * Displays a large, monospace OTP code with expiry notice.
- */
+
 export default function VerificationOTP({
   otp,
   userName,
@@ -31,12 +28,9 @@ export default function VerificationOTP({
       <Preview>Your {appName} verification code: {otp}</Preview>
       <Body style={body}>
         <Container style={container}>
-          {/* Header */}
           <Section style={header}>
             <Text style={logoText}>{appName}</Text>
           </Section>
-
-          {/* Main Content */}
           <Section style={content}>
             <Text style={greeting}>Hi {userName},</Text>
             <Text style={heading}>Verify your email address</Text>
@@ -44,8 +38,6 @@ export default function VerificationOTP({
               Use the code below to verify your email address. This code
               expires in <strong>10 minutes</strong>.
             </Text>
-
-            {/* OTP Display */}
             <Section style={otpContainer}>
               <Text style={otpCode}>{otp.split("").join(" ")}</Text>
             </Section>
@@ -56,15 +48,13 @@ export default function VerificationOTP({
             </Text>
 
             <Hr style={divider} />
-
-            {/* Security Note */}
             <Text style={securityNote}>
               🔒 If you did not create an account with {appName}, you can
               safely ignore this email. Do not share this code with anyone.
             </Text>
           </Section>
 
-          {/* Footer */}
+          
           <Section style={footer}>
             <Text style={footerText}>
               © {new Date().getFullYear()} {appName}. All rights reserved.
@@ -79,7 +69,6 @@ export default function VerificationOTP({
   );
 }
 
-// ── Styles ──────────────────────────────────────────────────────────────────
 
 const body: React.CSSProperties = {
   backgroundColor: "#FAE5D3",

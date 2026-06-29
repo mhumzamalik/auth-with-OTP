@@ -1,4 +1,4 @@
-/** Rate limit entry stored per key */
+
 interface RateLimitEntry {
   count: number;
   resetAt: number;
@@ -11,7 +11,7 @@ interface RateLimitEntry {
  */
 const store = new Map<string, RateLimitEntry>();
 
-/** Clean up expired entries every 5 minutes */
+
 setInterval(() => {
   const now = Date.now();
   for (const [key, entry] of store.entries()) {
@@ -21,17 +21,13 @@ setInterval(() => {
   }
 }, 5 * 60 * 1000);
 
-/** Options for rate limit check */
+
 interface RateLimitOptions {
-  /** Unique identifier (e.g., IP, email) */
   key: string;
-  /** Maximum number of requests allowed in the window */
   max: number;
-  /** Window duration in milliseconds */
   windowMs: number;
 }
 
-/** Result of a rate limit check */
 export interface RateLimitResult {
   allowed: boolean;
   remaining: number;

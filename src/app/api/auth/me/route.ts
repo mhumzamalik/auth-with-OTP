@@ -9,7 +9,6 @@ import { UnauthorizedError, APIError } from "@/lib/errors";
 export async function GET(_request: NextRequest): Promise<NextResponse> {
   try {
     const accessToken = await getAccessTokenFromCookies();
-
     if (!accessToken) {
       throw new UnauthorizedError("Not authenticated");
     }

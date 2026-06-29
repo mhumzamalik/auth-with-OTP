@@ -18,17 +18,6 @@ import { FormError } from "@/components/auth/FormError";
 import { FormSuccess } from "@/components/auth/FormSuccess";
 import { LoadingSpinner } from "@/components/shared/LoadingSpinner";
 
-/**
- * Forgot password form.
- * Accepts an email address and calls POST /api/auth/forgot-password.
- *
- * The API always returns the same safe message regardless of whether
- * the email is registered — this form mirrors that behaviour in the UI
- * (always shows a success state after submission to prevent enumeration).
- *
- * On success: shows success message + stores userId in sessionStorage
- * then navigates to /reset-password?userId=…
- */
 export function ForgotPasswordForm(): React.ReactElement {
   const router = useRouter();
 
@@ -61,8 +50,7 @@ export function ForgotPasswordForm(): React.ReactElement {
 
         const json = await res.json();
 
-        // API always returns success message (anti-enumeration)
-        // Even rate-limited responses return the same message
+
         if (!res.ok && res.status !== 429) {
           setServerError(
             json.message ?? "Something went wrong. Please try again."
@@ -75,7 +63,7 @@ export function ForgotPasswordForm(): React.ReactElement {
             "If this email is registered, you will receive a reset code."
         );
 
-        // If API returned a userId (email was found), navigate to reset page
+        
         if (json.data?.userId) {
           setTimeout(() => {
             router.push(`/reset-password?userId=${json.data.userId}`);
@@ -90,7 +78,6 @@ export function ForgotPasswordForm(): React.ReactElement {
 
   return (
     <div className="w-full space-y-6">
-      {/* Back link */}
       <Link
         href="/login"
         className="inline-flex items-center gap-1.5 text-sm text-gray-500 transition-colors hover:text-gray-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-burgundy rounded dark:text-gray-400 dark:hover:text-gray-100"
@@ -100,9 +87,7 @@ export function ForgotPasswordForm(): React.ReactElement {
         Back to login
       </Link>
 
-      {/* Heading */}
       <div className="space-y-1">
-        {/* Icon */}
         <div
           className="mb-3 inline-flex h-12 w-12 items-center justify-center rounded-full"
           style={{ backgroundColor: "#FAE5D3" }}
@@ -119,11 +104,9 @@ export function ForgotPasswordForm(): React.ReactElement {
         </p>
       </div>
 
-      {/* Feedback */}
       <FormError message={serverError} />
       <FormSuccess message={successMessage} />
 
-      {/* Form — hidden after success to prevent duplicate submissions */}
       {!successMessage && (
         <form
           onSubmit={handleSubmit(onSubmit)}
@@ -156,7 +139,6 @@ export function ForgotPasswordForm(): React.ReactElement {
             )}
           </div>
 
-          {/* Submit */}
           <Button
             type="submit"
             id="forgot-password-submit-btn"
@@ -177,7 +159,6 @@ export function ForgotPasswordForm(): React.ReactElement {
         </form>
       )}
 
-      {/* Success state — show redirect hint */}
       {successMessage && (
         <p className="text-center text-sm text-gray-500 dark:text-gray-400">
           Redirecting you to the reset page…{" "}
@@ -191,7 +172,6 @@ export function ForgotPasswordForm(): React.ReactElement {
         </p>
       )}
 
-      {/* Bottom nav */}
       <p className="text-center text-sm text-gray-500 dark:text-gray-400">
         Remembered it?{" "}
         <Link

@@ -1,9 +1,7 @@
 import mongoose, { Document, Model, Schema } from "mongoose";
 
-/** OTP type discriminator */
 export type OtpType = "email-verification" | "password-reset";
 
-/** Mongoose document interface for OTP */
 export interface IOTP extends Document {
   _id: mongoose.Types.ObjectId;
   userId: mongoose.Types.ObjectId;
@@ -44,10 +42,8 @@ const OTPSchema = new Schema<IOTP>(
   }
 );
 
-/** Compound index for fast user + type lookups */
 OTPSchema.index({ userId: 1, type: 1 });
 
-/** TTL index — MongoDB automatically removes documents after expiresAt */
 OTPSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
 
 const OTP: Model<IOTP> =

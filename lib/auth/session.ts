@@ -3,7 +3,6 @@ import Session, { type ISession } from "@/models/Session";
 import { REFRESH_TOKEN_EXPIRY, REMEMBER_ME_EXPIRY } from "@/lib/constants";
 import type mongoose from "mongoose";
 
-/** Device info parsed from User-Agent */
 export interface DeviceInfo {
   deviceName: string;
   browser: string;

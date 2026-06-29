@@ -8,11 +8,6 @@ interface ProvidersProps {
   children: React.ReactNode;
 }
 
-/**
- * Client-side providers wrapper.
- * Keeps the root layout a Server Component while injecting
- * client-only context (theme, toast) below it.
- */
 export function Providers({ children }: ProvidersProps): React.ReactElement {
   return (
     <ThemeProvider

@@ -35,7 +35,7 @@ const deleteAccountSchema = z.object({
   password: z.string().min(1, "Password is required to confirm deletion"),
 });
 
-type DeleteAccountInput = z.infer<typeof deleteAccountSchema>;
+type DeleteAccountInput = z.input<typeof deleteAccountSchema>;
 
 interface DeleteAccountDialogProps {
   /** The user's email shown in the warning message */
@@ -114,7 +114,6 @@ export function DeleteAccountDialog({
         });
 
         setOpen(false);
-        // Server has cleared cookies — redirect to login
         router.push("/login");
         router.refresh();
       } catch {

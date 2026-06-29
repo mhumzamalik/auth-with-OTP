@@ -43,25 +43,23 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
     const userObjectId = new mongoose.Types.ObjectId(userId);
 
-    // ── Verify OTP ─────────────────────────────────────────────────────────
     const result = await verifyOTP(userObjectId, type, otp);
 
     if (!result.valid) {
       return apiError(result.error ?? "Invalid OTP", undefined, "INVALID_OTP", 400);
     }
 
-    // ── Find user ──────────────────────────────────────────────────────────
     const user = await User.findById(userObjectId);
     if (!user) throw new NotFoundError("User not found");
 
     if (type === "email-verification") {
-      // Mark user as verified
+      
       await User.findByIdAndUpdate(userObjectId, { isVerified: true });
 
-      // Create session and issue tokens
+      
       const deviceInfo = parseUserAgent(userAgent);
 
-      // Create session first to get sessionId
+      
       const tempRefresh = signRefreshToken({ sub: userId, sessionId: "temp" });
       const session = await createSession(userObjectId, tempRefresh, deviceInfo, ip);
 
@@ -75,11 +73,11 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         sessionId: session._id.toString(),
       });
 
-      // Update session with correct token
+      
       const { rotateSession } = await import("@/lib/auth/session");
       await rotateSession(session._id as mongoose.Types.ObjectId, refreshToken);
 
-      // Send welcome email
+      
       await sendEmail({
         to: user.email,
         subject: `Welcome to ${process.env.NEXT_PUBLIC_APP_NAME ?? "AuthApp"}!`,
@@ -112,7 +110,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       return response;
     }
 
-    // For password-reset type — just confirm OTP was valid (no session issued)
+    
     return apiSuccess({ userId }, "OTP verified. You may now reset your password.");
   } catch (err) {
     if (err instanceof ValidationError) {

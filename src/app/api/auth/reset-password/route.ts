@@ -33,24 +33,19 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     await connectDB();
     const userObjectId = new mongoose.Types.ObjectId(userId);
 
-    // ── Verify OTP ─────────────────────────────────────────────────────────
     const result = await verifyOTP(userObjectId, "password-reset", otp);
     if (!result.valid) {
       return apiError(result.error ?? "Invalid OTP", undefined, "INVALID_OTP", 400);
     }
 
-    // ── Find user ──────────────────────────────────────────────────────────
     const user = await User.findById(userObjectId);
     if (!user) throw new NotFoundError("User not found");
 
-    // ── Hash and save new password ─────────────────────────────────────────
     const passwordHash = await hashPassword(password);
     await User.findByIdAndUpdate(userObjectId, { passwordHash });
 
-    // ── Revoke ALL active sessions (force logout everywhere) ───────────────
     const revokedCount = await revokeAllUserSessions(userObjectId);
 
-    // ── Log ────────────────────────────────────────────────────────────────
     await logAuthEvent({
       userId: userObjectId,
       event: "PASSWORD_CHANGED",
@@ -59,7 +54,6 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       metadata: { revokedSessions: revokedCount },
     });
 
-    // ── Clear cookies on current device ───────────────────────────────────
     const response = apiSuccess(
       {},
       "Password updated successfully. Please log in with your new password."

@@ -9,7 +9,6 @@ import { Button } from "@/components/ui/button";
 import { LoadingSpinner } from "@/components/shared/LoadingSpinner";
 import { getDeviceType } from "@/lib/utils/device";
 
-/** Session data shape returned by GET /api/auth/sessions */
 export interface SessionData {
   id: string;
   deviceName: string;
@@ -24,13 +23,9 @@ export interface SessionData {
 
 interface SessionCardProps {
   session: SessionData;
-  /** Called when the user confirms revocation of this session. */
   onRevoke: (sessionId: string) => Promise<void>;
 }
 
-/**
- * Returns the appropriate device icon component for a given device name.
- */
 function DeviceIcon({
   deviceName,
   className,
@@ -48,17 +43,7 @@ function DeviceIcon({
   return <Monitor className={className} aria-hidden="true" />;
 }
 
-/**
- * Single session card for the Active Sessions list.
- *
- * Displays:
- * - Device icon (mobile / tablet / desktop)
- * - Device name + "Current Device" badge
- * - Browser + OS
- * - IP address
- * - Last active (relative time)
- * - Revoke button (disabled for current session)
- */
+
 export function SessionCard({
   session,
   onRevoke,
@@ -87,7 +72,7 @@ export function SessionCard({
       role="listitem"
       aria-label={`Session: ${session.deviceName}${session.isCurrent ? " (current device)" : ""}`}
     >
-      {/* Device icon */}
+      
       <div
         className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full"
         style={{
@@ -104,9 +89,7 @@ export function SessionCard({
         />
       </div>
 
-      {/* Info */}
       <div className="flex-1 min-w-0 space-y-1">
-        {/* Device name + current badge */}
         <div className="flex flex-wrap items-center gap-2">
           <span className="text-sm font-semibold text-gray-900 truncate dark:text-gray-100">
             {session.deviceName}
@@ -122,13 +105,11 @@ export function SessionCard({
           )}
         </div>
 
-        {/* Browser + OS */}
         <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
           {session.browser}
           {session.os ? ` · ${session.os}` : ""}
         </p>
 
-        {/* IP + last active */}
         <div className="flex flex-wrap items-center gap-3 text-xs text-gray-400 dark:text-gray-500">
           <span className="flex items-center gap-1">
             <MapPin className="h-3 w-3 shrink-0" aria-hidden="true" />
@@ -143,7 +124,6 @@ export function SessionCard({
         </div>
       </div>
 
-      {/* Revoke button */}
       <Button
         variant="outline"
         size="sm"

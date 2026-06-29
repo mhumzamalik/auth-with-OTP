@@ -16,10 +16,6 @@ interface ResetPasswordOTPProps {
   appName?: string;
 }
 
-/**
- * React Email template for password reset OTP.
- * Includes security warning about not sharing the code.
- */
 export default function ResetPasswordOTP({
   otp,
   userName,
@@ -31,12 +27,9 @@ export default function ResetPasswordOTP({
       <Preview>Your {appName} password reset code: {otp}</Preview>
       <Body style={body}>
         <Container style={container}>
-          {/* Header */}
           <Section style={header}>
             <Text style={logoText}>{appName}</Text>
           </Section>
-
-          {/* Main Content */}
           <Section style={content}>
             <Text style={greeting}>Hi {userName},</Text>
             <Text style={heading}>Reset your password</Text>
@@ -45,14 +38,10 @@ export default function ResetPasswordOTP({
               account. Use the code below to proceed. This code expires in{" "}
               <strong>10 minutes</strong>.
             </Text>
-
-            {/* OTP Display */}
             <Section style={otpContainer}>
               <Text style={otpLabel}>Your reset code</Text>
               <Text style={otpCode}>{otp.split("").join(" ")}</Text>
             </Section>
-
-            {/* Warning */}
             <Section style={warningBox}>
               <Text style={warningText}>
                 ⚠️ <strong>Do not share this code with anyone.</strong>{" "}
@@ -61,16 +50,12 @@ export default function ResetPasswordOTP({
             </Section>
 
             <Hr style={divider} />
-
-            {/* Security Note */}
             <Text style={securityNote}>
               🔒 If you did not request a password reset, your account may be
               at risk. Please contact support immediately and do not use this
               code.
             </Text>
           </Section>
-
-          {/* Footer */}
           <Section style={footer}>
             <Text style={footerText}>
               © {new Date().getFullYear()} {appName}. All rights reserved.
@@ -85,7 +70,6 @@ export default function ResetPasswordOTP({
   );
 }
 
-// ── Styles ──────────────────────────────────────────────────────────────────
 
 const body: React.CSSProperties = {
   backgroundColor: "#FAE5D3",

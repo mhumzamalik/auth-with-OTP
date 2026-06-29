@@ -6,17 +6,10 @@ import { LoadingSpinner } from "@/components/shared/LoadingSpinner";
 
 interface GoogleButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  /** Label text. Defaults to "Continue with Google". */
   label?: string;
-  /** Shows a loading spinner and disables the button when true. */
   isLoading?: boolean;
 }
 
-/**
- * Google OAuth sign-in button matching the design spec.
- * Outlined style: white background, border, Google SVG logo, full-width.
- * Navigates to the Google OAuth consent screen when clicked.
- */
 export function GoogleButton({
   label = "Continue with Google",
   isLoading = false,
@@ -39,16 +32,11 @@ export function GoogleButton({
       disabled={isLoading || props.disabled}
       aria-label={label}
       className={cn(
-        // Base
         "relative flex w-full items-center justify-center gap-3 rounded-lg border border-gray-200 bg-white px-4 py-2.5 text-sm font-medium text-gray-700",
-        // Transitions
         "transition-all duration-200",
-        // Hover / focus
         "hover:bg-gray-50 hover:border-gray-300 hover:shadow-sm",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-burgundy focus-visible:ring-offset-2",
-        // Disabled
         "disabled:cursor-not-allowed disabled:opacity-60",
-        // Dark mode
         "dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:hover:bg-gray-800",
         className
       )}
@@ -57,7 +45,6 @@ export function GoogleButton({
       {isLoading ? (
         <LoadingSpinner size={18} label="Connecting to Google…" />
       ) : (
-        /* Official Google "G" SVG icon — exact brand colours */
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"

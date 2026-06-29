@@ -3,17 +3,13 @@ import { CheckCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface FormSuccessProps {
-  /** Success message to display. Renders nothing if falsy. */
+  
   message?: string | null;
-  /** Additional class names for the wrapper. */
+  
   className?: string;
 }
 
-/**
- * Displays a form-level success message.
- * Announces itself to screen readers via role="status" and aria-live="polite".
- * Renders nothing when message is empty/null/undefined.
- */
+
 export function FormSuccess({
   message,
   className,

@@ -14,14 +14,6 @@ import { Separator } from "@/components/ui/separator";
 
 export const dynamic = "force-dynamic";
 
-/**
- * /dashboard/security — Security settings page.
- *
- * Sections:
- * 1. Active Sessions — view and revoke all devices
- * 2. Change Password — update password with strength feedback
- * 3. Danger Zone — permanent account deletion
- */
 export default function SecurityPage(): React.ReactElement {
   const router = useRouter();
   const { user, isLoading } = useAuth();
@@ -37,7 +29,6 @@ export default function SecurityPage(): React.ReactElement {
 
   return (
     <div className="space-y-8">
-      {/* Page heading */}
       <div>
         <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
           Security Settings
@@ -46,8 +37,6 @@ export default function SecurityPage(): React.ReactElement {
           Manage your password, active sessions, and account security.
         </p>
       </div>
-
-      {/* ── Section 1: Active Sessions ──────────────────────────────────── */}
       <section aria-labelledby="sessions-heading">
         <h2
           id="sessions-heading"
@@ -60,7 +49,6 @@ export default function SecurityPage(): React.ReactElement {
 
       <Separator />
 
-      {/* ── Section 2: Change Password ──────────────────────────────────── */}
       <section aria-labelledby="password-heading">
         <h2
           id="password-heading"
@@ -73,7 +61,6 @@ export default function SecurityPage(): React.ReactElement {
 
       <Separator />
 
-      {/* ── Section 3: Danger Zone ──────────────────────────────────────── */}
       <section aria-labelledby="danger-heading">
         <h2
           id="danger-heading"

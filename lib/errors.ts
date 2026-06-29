@@ -1,8 +1,5 @@
 import type { ZodIssue } from "zod";
 
-/**
- * Base API error class. All custom errors extend from this.
- */
 export class APIError extends Error {
   public readonly statusCode: number;
   public readonly code: string;
@@ -17,10 +14,7 @@ export class APIError extends Error {
   }
 }
 
-/**
- * Thrown when Zod schema validation fails.
- * Carries field-level error details.
- */
+
 export class ValidationError extends APIError {
   public readonly errors: Record<string, string>;
 
@@ -34,19 +28,13 @@ export class ValidationError extends APIError {
   }
 }
 
-/**
- * Thrown when authentication fails or a token is invalid/expired.
- */
 export class UnauthorizedError extends APIError {
   constructor(message = "Unauthorized") {
     super(message, 401, "UNAUTHORIZED");
   }
 }
 
-/**
- * Thrown when the account is locked due to too many failed attempts.
- * Carries the lockUntil date for UI countdown display.
- */
+
 export class AccountLockedError extends APIError {
   public readonly lockUntil: Date;
 
@@ -61,36 +49,28 @@ export class AccountLockedError extends APIError {
   }
 }
 
-/**
- * Thrown when a requested resource is not found.
- */
+
 export class NotFoundError extends APIError {
   constructor(message = "Resource not found") {
     super(message, 404, "NOT_FOUND");
   }
 }
 
-/**
- * Thrown when a rate limit is exceeded.
- */
+
 export class RateLimitError extends APIError {
   constructor(message = "Too many requests. Please try again later.") {
     super(message, 429, "RATE_LIMIT_EXCEEDED");
   }
 }
 
-/**
- * Thrown when an operation is forbidden for the current user.
- */
+
 export class ForbiddenError extends APIError {
   constructor(message = "Forbidden") {
     super(message, 403, "FORBIDDEN");
   }
 }
 
-/**
- * Thrown when a conflict occurs (e.g., duplicate email).
- */
+
 export class ConflictError extends APIError {
   constructor(message = "Resource already exists") {
     super(message, 409, "CONFLICT");

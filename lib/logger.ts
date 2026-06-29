@@ -2,7 +2,6 @@ import { connectDB } from "@/lib/db";
 import AuthLog, { type AuthEventType } from "@/models/AuthLog";
 import type mongoose from "mongoose";
 
-/** Options for logging an auth event */
 interface LogAuthEventOptions {
   userId?: mongoose.Types.ObjectId | string;
   event: AuthEventType;
@@ -20,7 +19,7 @@ interface LogAuthEventOptions {
 export async function logAuthEvent(options: LogAuthEventOptions): Promise<void> {
   const { userId, event, ip = "0.0.0.0", userAgent = "", metadata = {} } = options;
 
-  // Always log to console for debugging
+  
   console.log(
     `[AUTH] ${new Date().toISOString()} | ${event} | ip=${ip} | userId=${userId ?? "anonymous"}`
   );
@@ -35,7 +34,6 @@ export async function logAuthEvent(options: LogAuthEventOptions): Promise<void> 
       metadata,
     });
   } catch (err) {
-    // Non-fatal: log to console but don't throw
     console.error("[AUTH LOGGER] Failed to write auth log:", err);
   }
 }

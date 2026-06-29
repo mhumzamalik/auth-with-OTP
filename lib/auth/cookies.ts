@@ -8,7 +8,6 @@ import {
   REMEMBER_ME_EXPIRY,
 } from "@/lib/constants";
 
-/** Determines if we're in a secure context (HTTPS required for __Host- cookies) */
 const isProduction = process.env.NODE_ENV === "production";
 
 /**

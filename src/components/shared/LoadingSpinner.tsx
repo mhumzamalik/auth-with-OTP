@@ -2,19 +2,12 @@ import * as React from "react";
 import { cn } from "@/lib/utils";
 
 interface LoadingSpinnerProps {
-  /** Size of the spinner in pixels. Defaults to 20. */
   size?: number;
-  /** Additional class names for the wrapper span. */
   className?: string;
-  /** Accessible label for screen readers. Defaults to "Loading…" */
   label?: string;
 }
 
-/**
- * Lightweight SVG-based loading spinner.
- * Uses CSS animation only — no JS required after mount.
- * Respects `prefers-reduced-motion` via Tailwind's `motion-safe:` variant.
- */
+
 export function LoadingSpinner({
   size = 20,
   className,

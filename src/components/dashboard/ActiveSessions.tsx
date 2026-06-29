@@ -11,19 +11,9 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { LoadingSpinner } from "@/components/shared/LoadingSpinner";
 
 interface ActiveSessionsProps {
-  /** Initial sessions from server — avoids a client waterfall on first paint. */
   initialSessions?: SessionData[];
 }
 
-/**
- * Active sessions panel for the security dashboard.
- *
- * Fetches sessions from GET /api/auth/sessions on mount and after mutations.
- * Provides:
- * - Per-session revocation via DELETE /api/auth/sessions?id=…
- * - "Sign Out All Other Devices" via POST /api/auth/revoke-all
- * - Manual refresh button
- */
 export function ActiveSessions({
   initialSessions,
 }: ActiveSessionsProps): React.ReactElement {
@@ -34,7 +24,6 @@ export function ActiveSessions({
   const [isRefreshing, setIsRefreshing] = React.useState(false);
   const [isRevokingAll, setIsRevokingAll] = React.useState(false);
 
-  /** Fetches the latest session list from the API. */
   const fetchSessions = React.useCallback(async (silent = false) => {
     if (!silent) setIsLoading(true);
     else setIsRefreshing(true);
@@ -60,14 +49,13 @@ export function ActiveSessions({
     }
   }, []);
 
-  // Load sessions on mount if no initialSessions provided
+
   React.useEffect(() => {
     if (!initialSessions) {
       void fetchSessions();
     }
   }, [fetchSessions, initialSessions]);
 
-  /** Revokes a single session by ID. */
   const handleRevoke = React.useCallback(
     async (sessionId: string) => {
       try {
@@ -87,7 +75,6 @@ export function ActiveSessions({
           description: "That device has been signed out.",
         });
 
-        // Optimistically remove from list
         setSessions((prev) => prev.filter((s) => s.id !== sessionId));
       } catch {
         toast.error("Network error. Please try again.");
@@ -96,7 +83,6 @@ export function ActiveSessions({
     []
   );
 
-  /** Revokes all sessions except the current one. */
   const handleRevokeAll = React.useCallback(async () => {
     const otherSessions = sessions.filter((s) => !s.isCurrent);
     if (otherSessions.length === 0) {
@@ -122,8 +108,6 @@ export function ActiveSessions({
       toast.success(`Signed out of ${count} other device${count !== 1 ? "s" : ""}`, {
         description: "All other sessions have been revoked.",
       });
-
-      // Keep only the current session in the list
       setSessions((prev) => prev.filter((s) => s.isCurrent));
     } catch {
       toast.error("Network error. Please try again.");
@@ -147,7 +131,6 @@ export function ActiveSessions({
             </CardDescription>
           </div>
 
-          {/* Action buttons */}
           <div className="flex shrink-0 items-center gap-2">
             {/* Refresh */}
             <Button
@@ -165,7 +148,6 @@ export function ActiveSessions({
               )}
             </Button>
 
-            {/* Sign out all other devices */}
             {otherSessionCount > 0 && (
               <Button
                 variant="outline"
@@ -195,7 +177,7 @@ export function ActiveSessions({
       </CardHeader>
 
       <CardContent>
-        {/* Loading skeleton */}
+        
         {isLoading ? (
           <div
             className="space-y-3"
@@ -207,7 +189,7 @@ export function ActiveSessions({
             <SessionCardSkeleton />
           </div>
         ) : sessions.length === 0 ? (
-          /* Empty state */
+          
           <div className="flex flex-col items-center justify-center py-10 text-center">
             <div
               className="mb-3 flex h-12 w-12 items-center justify-center rounded-full"
@@ -227,7 +209,7 @@ export function ActiveSessions({
             </p>
           </div>
         ) : (
-          /* Sessions list */
+        
           <div
             role="list"
             aria-label="Active sessions"

@@ -27,19 +27,14 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       throw new UnauthorizedError("No refresh token provided");
     }
 
-    // ── Verify JWT signature ───────────────────────────────────────────────
     const payload = verifyRefreshToken(refreshToken);
 
     await connectDB();
 
-    // ── Hash and look up session ───────────────────────────────────────────
     const hashedToken = hashRefreshToken(refreshToken);
     const session = await findActiveSessionByToken(hashedToken);
 
     if (!session) {
-      // ── REUSE DETECTION ────────────────────────────────────────────────
-      // Token hash not found in active sessions — possible token reuse attack
-      // Revoke ALL sessions for this user immediately
       const userId = new mongoose.Types.ObjectId(payload.sub);
       await revokeAllUserSessions(userId);
 
@@ -61,13 +56,11 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       return errorResponse;
     }
 
-    // ── Find user ──────────────────────────────────────────────────────────
     const user = await User.findById(session.userId);
     if (!user || !user.isVerified) {
       throw new UnauthorizedError("User not found or not verified");
     }
 
-    // ── Issue new tokens ───────────────────────────────────────────────────
     const newAccessToken = signAccessToken({
       sub: user._id.toString(),
       role: user.role,
@@ -78,10 +71,8 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       sessionId: session._id.toString(),
     });
 
-    // ── Rotate session (update hashed token + lastActive) ──────────────────
     await rotateSession(session._id as mongoose.Types.ObjectId, newRefreshToken);
 
-    // ── Log ────────────────────────────────────────────────────────────────
     await logAuthEvent({
       userId: user._id,
       event: "REFRESH_TOKEN_ROTATED",

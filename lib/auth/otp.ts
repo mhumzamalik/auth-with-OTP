@@ -43,7 +43,6 @@ export async function createOTP(
   const hashedOtp = hashOTP(plainOtp);
   const expiresAt = new Date(Date.now() + OTP_EXPIRY_MS);
 
-  // Delete any existing OTP of the same type for this user
   await OTP.deleteMany({ userId, type });
 
   await OTP.create({
@@ -91,7 +90,6 @@ export async function verifyOTP(
     };
   }
 
-  // Constant-time comparison
   const submittedHash = hashOTP(plainOtp);
   const storedHashBuf = Buffer.from(otpDoc.hashedOtp, "hex");
   const submittedHashBuf = Buffer.from(submittedHash, "hex");
@@ -113,7 +111,6 @@ export async function verifyOTP(
     };
   }
 
-  // OTP is valid — delete it so it can't be reused
   await OTP.deleteOne({ _id: otpDoc._id });
   return { valid: true };
 }

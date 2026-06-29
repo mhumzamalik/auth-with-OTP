@@ -31,7 +31,6 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   const userAgent = request.headers.get("user-agent") ?? "";
 
   try {
-    // ── Rate limit: 10 attempts / 15 min per IP ───────────────────────────
     const rateLimit = checkRateLimit({
       key: `login:${ip}`,
       max: RATE_LIMIT_LOGIN_MAX,
@@ -42,7 +41,6 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       throw new RateLimitError("Too many login attempts. Please try again in 15 minutes.");
     }
 
-    // ── Parse and validate ─────────────────────────────────────────────────
     const body: unknown = await request.json();
     const parsed = loginSchema.safeParse(body);
 
@@ -53,24 +51,19 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     const { email: rawEmail, password, rememberMe } = parsed.data;
     const email = normalizeEmail(rawEmail);
 
-    // ── Connect DB ─────────────────────────────────────────────────────────
     await connectDB();
 
-    // ── Find user (include passwordHash) ──────────────────────────────────
     const user = await User.findOne({ email }).select("+passwordHash");
 
     if (!user) {
-      // Don't reveal whether email exists
       await logAuthEvent({ event: "LOGIN_FAILED", ip, userAgent, metadata: { email } });
       throw new UnauthorizedError("Invalid email or password.");
     }
 
-    // ── Check account lock ─────────────────────────────────────────────────
     if (user.lockUntil && user.lockUntil > new Date()) {
       throw new AccountLockedError(user.lockUntil);
     }
 
-    // ── Check email verification ───────────────────────────────────────────
     if (!user.isVerified) {
       return apiError(
         "Please verify your email address before logging in.",
@@ -80,11 +73,9 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       );
     }
 
-    // ── Timing-safe password comparison ───────────────────────────────────
     const isValidPassword = await comparePassword(password, user.passwordHash);
 
     if (!isValidPassword) {
-      // Increment failed attempts
       const newAttempts = (user.failedLoginAttempts ?? 0) + 1;
       const updateData: Record<string, unknown> = { failedLoginAttempts: newAttempts };
 
@@ -113,17 +104,14 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       throw new UnauthorizedError("Invalid email or password.");
     }
 
-    // ── Success: reset failed attempts ────────────────────────────────────
     await User.findByIdAndUpdate(user._id, {
       failedLoginAttempts: 0,
       $unset: { lockUntil: 1 },
     });
 
-    // ── Create session ─────────────────────────────────────────────────────
     const deviceInfo = parseUserAgent(userAgent);
-    const tempSessionId = "temp"; // will be replaced below
+    const tempSessionId = "temp";
 
-    // Sign tokens — we need sessionId in the payload, create session first
     const accessToken = signAccessToken({
       sub: user._id.toString(),
       role: user.role,
@@ -141,8 +129,6 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       ip,
       rememberMe
     );
-
-    // Re-sign with real sessionId
     const finalAccessToken = signAccessToken({
       sub: user._id.toString(),
       role: user.role,
@@ -153,11 +139,9 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       rememberMe
     );
 
-    // Update session with correct token hash
     const { hashRefreshToken, rotateSession } = await import("@/lib/auth/session");
     await rotateSession(session._id, finalRefreshToken);
 
-    // ── Set cookies ────────────────────────────────────────────────────────
     const response = apiSuccess(
       {
         user: {
@@ -173,7 +157,6 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
     setAuthCookies(response, finalAccessToken, finalRefreshToken, rememberMe);
 
-    // ── Log ────────────────────────────────────────────────────────────────
     await logAuthEvent({
       userId: user._id,
       event: "LOGIN_SUCCESS",

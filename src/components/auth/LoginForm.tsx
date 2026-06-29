@@ -18,16 +18,6 @@ import { FormError } from "@/components/auth/FormError";
 import { GoogleButton } from "@/components/auth/GoogleButton";
 import { LoadingSpinner } from "@/components/shared/LoadingSpinner";
 
-/**
- * Login form with:
- * - Email + Password fields (Zod validated via react-hook-form)
- * - Show/hide password toggle
- * - Remember Me checkbox
- * - Forgot Password link
- * - Google OAuth button
- * - Server-side error display (account locked with countdown, wrong creds, etc.)
- * - Redirect to callbackUrl or /dashboard on success
- */
 export function LoginForm(): React.ReactElement {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -69,7 +59,6 @@ export function LoginForm(): React.ReactElement {
         const json = await res.json();
 
         if (!res.ok || !json.success) {
-          // Surface account-locked time if present
           if (json.code === "ACCOUNT_LOCKED" && json.errors?.lockUntil) {
             const remaining = Math.ceil(
               (new Date(json.errors.lockUntil).getTime() - Date.now()) / 60000
@@ -79,7 +68,6 @@ export function LoginForm(): React.ReactElement {
             );
           } else if (json.code === "EMAIL_NOT_VERIFIED") {
             setServerError(json.message);
-            // Redirect to verify-email if userId is known
             if (json.data?.userId) {
               router.push(`/verify-email?userId=${json.data.userId}`);
             }
@@ -104,15 +92,12 @@ export function LoginForm(): React.ReactElement {
 
   const handleGoogleLogin = React.useCallback(() => {
     setIsGoogleLoading(true);
-    // Redirect to Google OAuth — server handles the OAuth flow
     router.push("/api/auth/google");
   }, [router]);
 
   return (
     <div className="w-full space-y-6">
-      {/* Logo mark */}
       <div className="flex flex-col items-center gap-1 text-center">
-        {/* Cross/plus grid icon */}
         <div
           className="mb-2 grid grid-cols-2 gap-1"
           aria-hidden="true"
@@ -134,14 +119,12 @@ export function LoginForm(): React.ReactElement {
         </p>
       </div>
 
-      {/* Google OAuth */}
       <GoogleButton
         id="google-login-btn"
         onClick={handleGoogleLogin}
         isLoading={isGoogleLoading}
       />
 
-      {/* Divider */}
       <div className="flex items-center gap-3">
         <Separator className="flex-1" />
         <span className="text-xs text-gray-400 whitespace-nowrap dark:text-gray-500">
@@ -150,7 +133,6 @@ export function LoginForm(): React.ReactElement {
         <Separator className="flex-1" />
       </div>
 
-      {/* Server error */}
       <FormError message={serverError} />
 
       {/* Form */}
@@ -183,7 +165,6 @@ export function LoginForm(): React.ReactElement {
           )}
         </div>
 
-        {/* Password */}
         <div className="space-y-1.5">
           <Label htmlFor="login-password">Password</Label>
           <div className="relative">
@@ -223,7 +204,6 @@ export function LoginForm(): React.ReactElement {
           )}
         </div>
 
-        {/* Remember Me + Forgot Password */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Checkbox
@@ -250,7 +230,6 @@ export function LoginForm(): React.ReactElement {
           </Link>
         </div>
 
-        {/* Submit */}
         <Button
           type="submit"
           id="login-submit-btn"
@@ -270,7 +249,6 @@ export function LoginForm(): React.ReactElement {
         </Button>
       </form>
 
-      {/* Register link */}
       <p className="text-center text-sm text-gray-500 dark:text-gray-400">
         Not Registered Yet?{" "}
         <Link

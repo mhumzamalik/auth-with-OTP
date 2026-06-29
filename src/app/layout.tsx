@@ -57,7 +57,7 @@ export default function RootLayout({
     <html
       lang="en" data-scroll-behavior="smooth"
       className={inter.variable}
-      suppressHydrationWarning /* next-themes flips the class on mount */
+      suppressHydrationWarning
     >
       <body className="min-h-screen antialiased">
         <Providers>{children}</Providers>

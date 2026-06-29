@@ -6,9 +6,6 @@ export const metadata: Metadata = {
   description: "Create a new account to get started.",
 };
 
-/**
- * /register — Server Component page.
- */
 export default function RegisterPage(): React.ReactElement {
   return <RegisterForm />;
 }
