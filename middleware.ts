@@ -2,10 +2,10 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { jwtVerify } from "jose";
 
-/** Routes that require authentication */
+
 const PROTECTED_ROUTES = ["/dashboard"];
 
-/** Routes only accessible when NOT authenticated */
+
 const AUTH_ROUTES = [
   "/login",
   "/register",
@@ -14,14 +14,12 @@ const AUTH_ROUTES = [
   "/reset-password",
 ];
 
-/** Trusted origins for CSRF validation */
+
 const TRUSTED_ORIGINS = [
   process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000",
 ];
 
-/**
- * Generates security headers including a unique CSP nonce per request.
- */
+
 function buildSecurityHeaders(nonce: string): Record<string, string> {
   const csp = [
     `default-src 'self'`,
@@ -49,10 +47,7 @@ function buildSecurityHeaders(nonce: string): Record<string, string> {
   };
 }
 
-/**
- * Verifies the JWT access token from the __Host-access-token cookie.
- * Returns the decoded payload or null if invalid.
- */
+
 async function verifyAccessToken(token: string): Promise<boolean> {
   try {
     const secret = new TextEncoder().encode(
@@ -65,16 +60,13 @@ async function verifyAccessToken(token: string): Promise<boolean> {
   }
 }
 
-/**
- * Main middleware function — runs on every matched request.
- * Handles: route protection, security headers, origin validation.
- */
+
 export async function middleware(request: NextRequest): Promise<NextResponse> {
   const { pathname, origin } = request.nextUrl;
   const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
   const securityHeaders = buildSecurityHeaders(nonce);
 
-  // ── Trusted Origin Check for mutating API requests ───────────────────────
+
   if (
     request.method !== "GET" &&
     request.method !== "HEAD" &&
@@ -102,7 +94,7 @@ export async function middleware(request: NextRequest): Promise<NextResponse> {
     ? await verifyAccessToken(accessToken)
     : false;
 
-  // ── Redirect authenticated users away from auth pages ────────────────────
+
   if (isAuthRoute && isAuthenticated) {
     const response = NextResponse.redirect(
       new URL("/dashboard", request.url)
@@ -113,9 +105,9 @@ export async function middleware(request: NextRequest): Promise<NextResponse> {
     return response;
   }
 
-  // ── Redirect unauthenticated users away from protected pages ─────────────
+
   if (isProtected && !isAuthenticated) {
-    // Check refresh token — if present the /api/auth/refresh route will handle rotation
+
     const refreshToken = request.cookies.get(
       "__Host-refresh-token"
     )?.value;
@@ -151,13 +143,7 @@ export async function middleware(request: NextRequest): Promise<NextResponse> {
 
 export const config = {
   matcher: [
-    /*
-     * Match all request paths EXCEPT:
-     * - _next/static (static files)
-     * - _next/image (image optimization)
-     * - favicon.ico
-     * - public folder files
-     */
+
     "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
   ],
 };

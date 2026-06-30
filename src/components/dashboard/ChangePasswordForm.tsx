@@ -17,7 +17,6 @@ import { PasswordStrengthBar } from "@/components/auth/PasswordStrengthBar";
 import { LoadingSpinner } from "@/components/shared/LoadingSpinner";
 import { PASSWORD_MIN_LENGTH, PASSWORD_MAX_LENGTH } from "@/lib/constants";
 
-/** Inline schema — change-password is only used on the dashboard */
 const changePasswordSchema = z
   .object({
     currentPassword: z
@@ -40,15 +39,7 @@ const changePasswordSchema = z
 
 type ChangePasswordInput = z.infer<typeof changePasswordSchema>;
 
-/**
- * Change password form for the dashboard security page.
- * Calls POST /api/auth/reset-password with the current OTP flow
- * — but this form uses a dedicated change-password endpoint instead.
- *
- * NOTE: This form calls a dedicated endpoint POST /api/auth/change-password
- * which verifies the current password before updating. This is distinct
- * from the forgot-password/OTP reset flow used by unauthenticated users.
- */
+
 export function ChangePasswordForm(): React.ReactElement {
   const [showCurrent, setShowCurrent] = React.useState(false);
   const [showNew, setShowNew] = React.useState(false);
@@ -139,7 +130,7 @@ export function ChangePasswordForm(): React.ReactElement {
           className="space-y-4"
           aria-label="Change password form"
         >
-          {/* Current password */}
+          
           <div className="space-y-1.5">
             <Label htmlFor="change-current-password">Current Password</Label>
             <div className="relative">
@@ -181,7 +172,6 @@ export function ChangePasswordForm(): React.ReactElement {
             )}
           </div>
 
-          {/* New password */}
           <div className="space-y-1.5">
             <Label htmlFor="change-new-password">New Password</Label>
             <div className="relative">
@@ -224,7 +214,7 @@ export function ChangePasswordForm(): React.ReactElement {
             )}
           </div>
 
-          {/* Confirm new password */}
+          
           <div className="space-y-1.5">
             <Label htmlFor="change-confirm-password">Confirm New Password</Label>
             <div className="relative">
