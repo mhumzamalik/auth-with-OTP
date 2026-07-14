@@ -20,15 +20,19 @@ const TRUSTED_ORIGINS = [
 ];
 
 
-function buildSecurityHeaders(nonce: string): Record<string, string> {
+function buildSecurityHeaders(): Record<string, string> {
   const isProd = process.env.NODE_ENV === "production";
 
+  // In production, use 'self' + 'unsafe-inline' for scripts.
+  // Nonce-based 'strict-dynamic' requires deep Next.js integration
+  // (experimental.serverActions nonce) which is not configured.
+  // Without that integration, Next.js scripts are blocked and the page never hydrates.
   const scriptSrc = isProd
-    ? `script-src 'self' 'nonce-${nonce}' 'strict-dynamic' https://accounts.google.com`
+    ? `script-src 'self' 'unsafe-inline' https://accounts.google.com`
     : `script-src 'self' 'unsafe-inline' 'unsafe-eval' https://accounts.google.com`;
 
   const connectSrc = isProd
-    ? `connect-src 'self'`
+    ? `connect-src 'self' https://accounts.google.com https://oauth2.googleapis.com`
     : `connect-src 'self' ws://localhost:* wss://localhost:* http://localhost:* https://localhost:*`;
 
   const csp = [
@@ -40,7 +44,7 @@ function buildSecurityHeaders(nonce: string): Record<string, string> {
     connectSrc,
     `frame-ancestors 'none'`,
     `base-uri 'self'`,
-    `form-action 'self'`,
+    `form-action 'self' https://accounts.google.com`,
     `object-src 'none'`,
   ].join("; ");
 
@@ -51,9 +55,7 @@ function buildSecurityHeaders(nonce: string): Record<string, string> {
     "X-Content-Type-Options": "nosniff",
     "Referrer-Policy": "strict-origin-when-cross-origin",
     "Permissions-Policy": "camera=(), microphone=(), geolocation=()",
-    "Cross-Origin-Opener-Policy": "same-origin",
-    "Cross-Origin-Embedder-Policy": "require-corp",
-    "X-Nonce": nonce,
+    "Cross-Origin-Opener-Policy": "same-origin-allow-popups",
   };
 }
 
@@ -72,9 +74,8 @@ async function verifyAccessToken(token: string): Promise<boolean> {
 
 
 export async function middleware(request: NextRequest): Promise<NextResponse> {
-  const { pathname, origin } = request.nextUrl;
-  const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
-  const securityHeaders = buildSecurityHeaders(nonce);
+  const { pathname } = request.nextUrl;
+  const securityHeaders = buildSecurityHeaders();
 
 
   if (
@@ -151,7 +152,6 @@ export async function middleware(request: NextRequest): Promise<NextResponse> {
   Object.entries(securityHeaders).forEach(([key, value]) => {
     response.headers.set(key, value);
   });
-  response.headers.set("x-nonce", nonce);
   return response;
 }
 
