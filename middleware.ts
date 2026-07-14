@@ -21,13 +21,23 @@ const TRUSTED_ORIGINS = [
 
 
 function buildSecurityHeaders(nonce: string): Record<string, string> {
+  const isProd = process.env.NODE_ENV === "production";
+
+  const scriptSrc = isProd
+    ? `script-src 'self' 'nonce-${nonce}' 'strict-dynamic' https://accounts.google.com`
+    : `script-src 'self' 'unsafe-inline' 'unsafe-eval' https://accounts.google.com`;
+
+  const connectSrc = isProd
+    ? `connect-src 'self'`
+    : `connect-src 'self' ws://localhost:* wss://localhost:* http://localhost:* https://localhost:*`;
+
   const csp = [
     `default-src 'self'`,
-    `script-src 'self' 'nonce-${nonce}' 'strict-dynamic' https://accounts.google.com`,
+    scriptSrc,
     `style-src 'self' 'unsafe-inline' https://fonts.googleapis.com`,
     `font-src 'self' https://fonts.gstatic.com`,
     `img-src 'self' data: https://lh3.googleusercontent.com https://avatars.githubusercontent.com`,
-    `connect-src 'self'`,
+    connectSrc,
     `frame-ancestors 'none'`,
     `base-uri 'self'`,
     `form-action 'self'`,
@@ -89,7 +99,11 @@ export async function middleware(request: NextRequest): Promise<NextResponse> {
     (route) => pathname === route || pathname.startsWith(`${route}/`)
   );
 
-  const accessToken = request.cookies.get("__Host-access-token")?.value;
+  const isProd = process.env.NODE_ENV === "production";
+  const accessCookieName = isProd ? "__Host-access-token" : "Host-access-token";
+  const refreshCookieName = isProd ? "__Host-refresh-token" : "Host-refresh-token";
+
+  const accessToken = request.cookies.get(accessCookieName)?.value;
   const isAuthenticated = accessToken
     ? await verifyAccessToken(accessToken)
     : false;
@@ -109,7 +123,7 @@ export async function middleware(request: NextRequest): Promise<NextResponse> {
   if (isProtected && !isAuthenticated) {
 
     const refreshToken = request.cookies.get(
-      "__Host-refresh-token"
+      refreshCookieName
     )?.value;
 
     if (refreshToken) {

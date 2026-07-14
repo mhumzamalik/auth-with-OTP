@@ -30,8 +30,10 @@ export const RATE_LIMIT_REGISTER_MAX = 5;
 
 export const RATE_LIMIT_REGISTER_WINDOW_MS = 60 * 60 * 1000;
 
-export const COOKIE_ACCESS_TOKEN = "Host-access-token";
-export const COOKIE_REFRESH_TOKEN = "Host-refresh-token";
+const isProd = process.env.NODE_ENV === "production";
+
+export const COOKIE_ACCESS_TOKEN = isProd ? "__Host-access-token" : "Host-access-token";
+export const COOKIE_REFRESH_TOKEN = isProd ? "__Host-refresh-token" : "Host-refresh-token";
 
 export const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME ?? "AuthApp";
 
