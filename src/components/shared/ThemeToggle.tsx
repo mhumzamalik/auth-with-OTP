@@ -23,8 +23,9 @@ export function ThemeToggle({ className }: ThemeToggleProps): React.ReactElement
     else setTheme("light");
   }, [theme, setTheme]);
 
-  const label =
-    theme === "light"
+  const label = !mounted
+    ? "Toggle theme"
+    : theme === "light"
       ? "Switch to dark mode"
       : theme === "dark"
         ? "Switch to system theme"

@@ -88,8 +88,8 @@ export function RegisterForm(): React.ReactElement {
 
   const handleGoogleSignUp = React.useCallback(() => {
     setIsGoogleLoading(true);
-    router.push("/api/auth/google");
-  }, [router]);
+    window.location.href = "/api/auth/google";
+  }, []);
 
   return (
     <div className="w-full space-y-6">

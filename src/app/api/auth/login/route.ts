@@ -73,6 +73,14 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       );
     }
 
+    if (!user.passwordHash) {
+      // User signed up with Google and has no password set
+      await logAuthEvent({ event: "LOGIN_FAILED", ip, userAgent, metadata: { email, reason: "no_password" } });
+      throw new UnauthorizedError(
+        "This account uses Google sign-in. Please log in with Google."
+      );
+    }
+
     const isValidPassword = await comparePassword(password, user.passwordHash);
 
     if (!isValidPassword) {

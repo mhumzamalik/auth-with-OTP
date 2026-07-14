@@ -134,7 +134,7 @@ export function AuthLayout({ children }: AuthLayoutProps): React.ReactElement {
               className="text-2xl font-extrabold leading-tight"
               style={{ color: "#5C2D3A" }}
             >
-              Turn your ideas into reality.
+              Turn your ideas into reality with Muhammad Hamza.
             </p>
             <p className="mt-2 text-sm" style={{ color: "#9B6070" }}>
               Start for free and get attractive offers from the community

@@ -6,7 +6,8 @@ export interface IUser extends Document {
   _id: mongoose.Types.ObjectId;
   fullName: string;
   email: string;
-  passwordHash: string;
+  passwordHash?: string;
+  googleId?: string;
   isVerified: boolean;
   role: UserRole;
   avatar?: string;
@@ -35,8 +36,14 @@ const UserSchema = new Schema<IUser>(
     },
     passwordHash: {
       type: String,
-      required: [true, "Password hash is required"],
+      required: false,
       select: false, // Never returned in queries by default
+    },
+    googleId: {
+      type: String,
+      unique: true,
+      sparse: true, // Allow multiple null values
+      default: undefined,
     },
     isVerified: {
       type: Boolean,
@@ -76,6 +83,8 @@ const UserSchema = new Schema<IUser>(
 UserSchema.index({ email: 1 });
 
 UserSchema.index({ email: 1, lockUntil: 1 });
+
+UserSchema.index({ googleId: 1 });
 
 const User: Model<IUser> =
   mongoose.models.User ?? mongoose.model<IUser>("User", UserSchema);

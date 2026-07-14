@@ -11,7 +11,8 @@ export type AuthEventType =
   | "LOGOUT"
   | "REFRESH_TOKEN_ROTATED"
   | "SESSION_REVOKED"
-  | "SUSPICIOUS_REUSE_DETECTED";
+  | "SUSPICIOUS_REUSE_DETECTED"
+  | "GOOGLE_LOGIN";
 
 
 export interface IAuthLog extends Document {
@@ -45,6 +46,7 @@ const AuthLogSchema = new Schema<IAuthLog>(
         "REFRESH_TOKEN_ROTATED",
         "SESSION_REVOKED",
         "SUSPICIOUS_REUSE_DETECTED",
+        "GOOGLE_LOGIN",
       ],
       required: true,
     },
