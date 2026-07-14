@@ -15,11 +15,6 @@ const AUTH_ROUTES = [
 ];
 
 
-const TRUSTED_ORIGINS = [
-  process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000",
-];
-
-
 function buildSecurityHeaders(): Record<string, string> {
   const isProd = process.env.NODE_ENV === "production";
 
@@ -77,18 +72,30 @@ export async function middleware(request: NextRequest): Promise<NextResponse> {
   const { pathname } = request.nextUrl;
   const securityHeaders = buildSecurityHeaders();
 
-
+  // ── CSRF origin check for mutating API requests ──────────────────────────
   if (
     request.method !== "GET" &&
     request.method !== "HEAD" &&
     pathname.startsWith("/api/")
   ) {
     const requestOrigin = request.headers.get("origin");
-    if (requestOrigin && !TRUSTED_ORIGINS.includes(requestOrigin)) {
-      return new NextResponse(
-        JSON.stringify({ success: false, message: "Forbidden: invalid origin" }),
-        { status: 403, headers: { "Content-Type": "application/json" } }
-      );
+    if (requestOrigin) {
+      // Trust the request's own origin (same-origin) and any explicitly configured URL
+      const requestHost = request.nextUrl.origin;
+      const configuredUrl = process.env.NEXT_PUBLIC_APP_URL ?? "";
+      const trustedOrigins = new Set([
+        requestHost,
+        configuredUrl,
+        // Also trust without trailing slash
+        configuredUrl.replace(/\/$/, ""),
+      ]);
+
+      if (!trustedOrigins.has(requestOrigin)) {
+        return new NextResponse(
+          JSON.stringify({ success: false, message: "Forbidden: invalid origin" }),
+          { status: 403, headers: { "Content-Type": "application/json" } }
+        );
+      }
     }
   }
 
